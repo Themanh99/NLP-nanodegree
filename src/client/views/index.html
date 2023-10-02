@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>Natural Language</title>
+    </head>
+
+    <body>
+        <header>
+            <div class="">
+                Logo-XX
+            </div>
+            <div class="">
+               Navigation
+            </div>
+        </header>
+
+        <main>
+            <section>
+                <form class="form" method="post" onsubmit="return Client.handleSubmit(event)">
+                    <input id="name" type="url" name="url" value=""  placeholder="https://www.meaningcloud.com">
+                    <input type="submit" name="" value="submit" onclick="return Client.handleSubmit(event)" onsubmit="return Client.handleSubmit(event)">
+                </form>
+
+                <div class="result">
+                    <ul>
+                       Result
+                    </ul>
+                </div>
+            <section>
+        </main>
+        <footer>
+            <p>Copyright &copy; 2023 ManhCT</p>
+        </footer>
+
+        <script>
+                if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/service-worker.js').then(registration =>{
+                        console.log('SW registered successfuly: ', registration);
+                    });
+                });
+                }else{
+                console.log("Service Working not supported");
+                    }
+        </script>
+
+    </body>
+</html>
