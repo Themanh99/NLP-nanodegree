@@ -27,8 +27,4 @@ const checkRequest = async (req, res, next) => {
   }
 };
 
-app.get("/", function (req, res) {
-  res.sendFile("dist/index.html");
-});
-
 export { checkRequest };
