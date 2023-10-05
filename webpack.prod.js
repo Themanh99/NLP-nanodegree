@@ -4,13 +4,14 @@ const TerserPlugin = require("terser-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
-const { GenerateSW } = require("workbox-webpack-plugin");
+const WorkboxPlugin = require("workbox-webpack-plugin");
 
 module.exports = {
   entry: "./src/client/index.js",
   output: {
-    filename: "bundle.js",
     path: path.resolve(__dirname, "dist"),
+    filename: "[name].js",
+    clean: true,
     libraryTarget: "var",
     library: "Lib",
   },
@@ -40,7 +41,9 @@ module.exports = {
     ],
   },
   plugins: [
-    new MiniCssExtractPlugin(),
+    new MiniCssExtractPlugin({
+      filename: "[name].css",
+    }),
     new HtmlWebPackPlugin({
       template: "./src/client/views/index.html",
       filename: "./index.html",
@@ -51,9 +54,6 @@ module.exports = {
       cleanStaleWebpackAssets: false,
       protectWebpackAssets: false,
     }),
-    new GenerateSW({
-      clientsClaim: true,
-      skipWaiting: true,
-    }),
+    new WorkboxPlugin.GenerateSW(),
   ],
 };

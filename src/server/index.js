@@ -3,7 +3,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const express = require("express");
 const mockAPIResponse = require("./mockAPI.js");
-const requestPost = require("./requestServer.js");
+const axios = require("axios");
 
 const app = express();
 
@@ -28,11 +28,18 @@ app.get("/test", function (req, res) {
   res.send(mockAPIResponse);
 });
 
-app.post("/sentiments", function (req, res, next) {
+app.post("/sentiments", async function (req, res, next) {
   try {
-    requestPost.checkRequest(req, res, next);
-    requestPost.post(req, res, next);
+    const url = generateURL(req.body.url);
+    const response = await axios.post(url);
+    return res.json(response);
   } catch (error) {
     return next(error);
+  }
+  function generateURL(urlInput) {
+    const baseURL = process.env.API_URL;
+    const apiKey = process.env.API_KEY;
+    const url = `${baseURL}?key=${apiKey}&lang=auto&url=${urlInput}`;
+    return url;
   }
 });

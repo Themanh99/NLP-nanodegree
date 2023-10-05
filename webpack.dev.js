@@ -1,13 +1,15 @@
 const HtmlWebPackPlugin = require("html-webpack-plugin");
-const { GenerateSW } = require("workbox-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
   entry: "./src/client/index.js",
+  devtool: "source-map",
   output: {
     libraryTarget: "var",
     library: "Lib",
+    path: path.resolve(__dirname, "dist"),
+    filename: "[name].js",
+    clean: true,
   },
   mode: "development",
   module: {
@@ -33,11 +35,6 @@ module.exports = {
     new HtmlWebPackPlugin({
       template: "./src/client/views/index.html",
       filename: "./index.html",
-    }),
-
-    new GenerateSW({
-      clientsClaim: true,
-      skipWaiting: true,
     }),
   ],
 };
