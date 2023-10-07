@@ -1,42 +1,50 @@
-const { checkUrl } = require("./checkUrl");
-
-function handleSubmit(event) {
+export async function handleSubmit(event) {
   event.preventDefault();
-  const inputText = document.getElementById("url").value;
-  const rslt = document.getElementsByClassName("result");
-  if (inputText === "" || !checkUrl(inputText)) {
-    alert("Please re-enter a URL");
+
+  document.getElementById("result").innerHTML = "";
+  const url = document.getElementById("url").value;
+
+  if (url.length == 0) {
+    document.getElementById("error").innerHTML =
+      "You did not enter URL! Please enter a valid URL";
+    return;
+  } else if (!checkUrl(url)) {
+    document.getElementById("error").innerHTML = "URL is not valid";
+    return;
+  } else {
+    document.getElementById("error").innerHTML = "";
   }
-  sendData({ url: inputText }, "/sentiments").then(function (data) {
-    console.log(data);
-    const div = document.createElement("div");
-    const p = document.createElement("p");
-    const score_tag = `score_tag: ${data.score_tag}\n`;
-    const agreement = `agreement: ${data.agreement}\n`;
-    const subjectivity = `subjectivity: ${data.subjectivity}\n`;
-    const confidence = `confidence: ${data.confidence}\n`;
-    const combinedText = `${score_tag}${agreement}${subjectivity}${confidence}`;
-    p.innerHTML = combinedText;
-    div.appendChild(p);
-    rslt.appendChild(div);
-  });
+
+  let data = await sendRequest("/postSentiment", url)
+    .then((data) => data.json())
+    .then(function (res) {
+      console.log(res.status.code);
+      Client.updateUI(res);
+    });
 }
 
-async function sendData(data = {}, url = "") {
-  const response = await fetch(url, {
+export function checkUrl(inputText) {
+  const pattern = new RegExp(
+    "^(https?:\\/\\/)?" + // Protocol URL
+      "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // Domain name
+      "((\\d{1,3}\\.){3}\\d{1,3}))" +
+      "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" +
+      "(\\?[;&a-z\\d%_.~+=-]*)?" + // Query string
+      "(\\#[-a-z\\d_]*)?$",
+    "i"
+  );
+  return !!pattern.test(inputText);
+}
+
+export async function sendRequest(enpointUrl, urlInput) {
+  let response = await fetch(enpointUrl, {
     method: "POST",
+    credentials: "same-origin",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(data),
+    body: JSON.stringify({ inputUrl: urlInput }),
   });
 
-  try {
-    const rsltData = await response.json();
-    return rsltData;
-  } catch (error) {
-    console.log("error", error);
-  }
+  return response;
 }
-
-export { handleSubmit, sendData };

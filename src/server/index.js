@@ -1,45 +1,57 @@
 const path = require("path");
-const cors = require("cors");
-const bodyParser = require("body-parser");
-const express = require("express");
-const mockAPIResponse = require("./mockAPI.js");
-const axios = require("axios");
 
+/**
+ * Load environment variables from .env file
+ */
+const dotenv = require("dotenv");
+dotenv.config();
+
+const express = require("express");
 const app = express();
 
-app.use(cors());
+/**
+ * Used middleware to parse the request body
+ */
+const bodyParser = require("body-parser");
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(
-  bodyParser.urlencoded({
-    extended: true,
-  })
-);
+
+/**
+ * Used middleware to enable CORS
+ */
+const cors = require("cors");
+app.use(cors());
+
 app.use(express.static("dist"));
 
-app.listen(3099, function () {
-  console.log("Server app listening on port 3099!");
+/**
+ * Check if environment variables
+ */
+let PORT = process.env.PORT;
+app.listen(PORT, function () {
+  console.log(`Example app listening on port ${PORT}...`);
 });
 
-app.get("/", function (req, res) {
-  res.sendFile("dist/index.html");
+/**
+ * TODO: Get data from server side then show in client
+ */
+app.get("/getSentiment", function (req, res) {
+  res.sendFile("index.html", { root: "dist" });
 });
 
-app.get("/test", function (req, res) {
-  res.send(mockAPIResponse);
-});
+/**
+ * TODO: Post data from client side to server side, call API
+ */
+app.post("/postSentiment", callData);
 
-app.post("/sentiments", async function (req, res, next) {
+async function callData(req, res) {
+  const url = `${process.env.API_URL}?key=${process.env.API_KEY}&lang=auto&url=${req.body.inputUrl}`;
+  const response = await fetch(url);
+
   try {
-    const url = generateURL(req.body.url);
-    const response = await axios.post(url);
-    return res.json(response);
+    const data = await response.json();
+    res.send(data);
   } catch (error) {
-    return next(error);
+    console.error(error);
   }
-  function generateURL(urlInput) {
-    const baseURL = process.env.API_URL;
-    const apiKey = process.env.API_KEY;
-    const url = `${baseURL}?key=${apiKey}&lang=auto&url=${urlInput}`;
-    return url;
-  }
-});
+}

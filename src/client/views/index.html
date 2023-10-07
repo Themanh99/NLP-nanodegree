@@ -1,47 +1,51 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-    <head>
-        <meta charset="utf-8">
-        <title>Natural Language</title>
-    </head>
 
-    <body>
-        <header>
-            <div class="">
-                Logo-XX
+<head>
+    <meta charset="utf-8">
+    <title>Natural Language</title>
+</head>
+
+<body>
+    <header>
+        <div class="">
+            Logo-XX
+        </div>
+        <div class="">
+            Navigation
+        </div>
+    </header>
+
+    <main>
+        <section>
+            <form class="" onsubmit="return Client.handleSubmit(event)">
+                <input id="url" type="text" name="input" value="" placeholder="https://api.meaningcloud.com">
+                <input type="submit" name="" value="Send" onclick="return Client.handleSubmit(event)"
+                    onsubmit="return handleSubmit(event)">
+            </form>
+            <div id="error"></div>
+        </section>
+
+        <section>
+            <!-- View results -->
+            <strong>Form Results:</strong>
+            <div id="result">
             </div>
-            <div class="">
-               Navigation
-            </div>
-        </header>
+        </section>
+    </main>
+    <footer>
+        <p>Copyright &copy; 2023 ManhCT</p>
+    </footer>
+    <!-- Service Workers -->
+    <script>
+        // Check that service workers are supported
+        if ('serviceWorker' in navigator) {
+            // Use the window load event to keep the page load performant
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker.js');
+            });
+        }
+    </script>
+</body>
 
-        <main>
-            <section>
-                <form class="form" method="post" onsubmit="return Lib.handleSubmit(event)">
-                    <input id="url" type="url" name="url" value=""  placeholder="https://www.meaningcloud.com">
-                    <input type="submit" name="" value="submit" onclick="return Lib.handleSubmit(event)" onsubmit="return Lib.handleSubmit(event)">
-                </form>
-
-                <div class="result">
-                    <ul>
-                       Result
-                    </ul>
-                </div>
-            <section>
-        </main>
-        <footer>
-            <p>Copyright &copy; 2023 ManhCT</p>
-        </footer>
-
-        <script>
-                if ('serviceWorker' in navigator) {
-                window.addEventListener('load', () => {
-                    navigator.serviceWorker.register('/service-worker.js').then(registration =>{
-                        console.log('SW registered successfuly: ', registration);
-                    });
-                });
-            }
-        </script>
-
-    </body>
 </html>
